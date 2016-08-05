@@ -3,4 +3,5 @@ include("./apr.php");
 
 $apr =  new Apr();
 
-echo $apr->search("sbb", 1);
+print_r($apr->search("sbb", 1));
+

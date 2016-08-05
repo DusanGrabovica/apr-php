@@ -36,7 +36,42 @@ Class Apr{
 			$results = $this->_search($query, $category);
 		}
 
-		return $results;
+		$dom = new DOMDocument;
+		@$dom->loadHTML("<?xml encoding=\"UTF-8\">".$results);
+
+		$tables = $dom->getElementsByTagName("table");
+
+		$search = [];
+
+		$results = ["type", "pib", "name", "status", "link"];
+
+		foreach($tables as $table){
+			$rows = $table->getElementsByTagName("tr");
+
+			foreach($rows as $row){
+				$columns = $row->getElementsByTagName("td");
+
+				$result = [];
+
+				foreach($columns as $key => $column){
+					if($results[$key] == "link"){
+						$links = $column->getElementsByTagName("a");
+
+						foreach($links as $link){}
+
+						$result[$results[$key]] = $link->getAttribute("href");
+					}
+					else
+					{
+						$result[$results[$key]] = trim($column->textContent);
+					}
+				}
+
+				$search[] = $result;
+			}
+
+			return $search;
+		}
 	}
 
 	public function _search($query, $category = 1){
