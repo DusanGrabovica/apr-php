@@ -29,6 +29,17 @@ Class Apr{
 	}
 
 	public function search($query, $category = 1){
+		$results = $this->_search($query, $category);
+
+		if($results == "error"){
+			$this->authenticate();
+			$results = $this->_search($query, $category);
+		}
+
+		return $results;
+	}
+
+	public function _search($query, $category = 1){
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, "http://pretraga2.apr.gov.rs/ObjedinjenePretrage/Search/SearchResult");
 
@@ -52,7 +63,13 @@ Class Apr{
 		$server_output = curl_exec ($ch);
 		curl_close($ch);
 
-		return $server_output;
+		if(strpos($server_output, "Error")){
+			return "error";
+		}
+		else
+		{
+			return $server_output;
+		}
 	}
 
 	public function authenticate(){
@@ -70,15 +87,15 @@ Class Apr{
 		$server_output = explode("\n", $server_output);
 
 		foreach($server_output as $key => $line){
-			if(strpos($line, "__RequestVerificationToken_") != false){
+			if(strpos($line, "__RequestVerificationToken_")){
 				$this->cookie = explode(";", explode(": ", $line)[1])[0];
 			}
 
-			if(strpos($line, "__RequestVerificationToken\"") != false){
+			if(strpos($line, "__RequestVerificationToken\"")){
 				$this->hidden = explode("\"", explode("value=\"", $line)[1])[0];
 			}
 
-			if(strpos($line, "SERVERID=") != false){
+			if(strpos($line, "SERVERID=")){
 				$this->server = explode(";", explode("SERVERID=", $line)[1])[0];
 			}
 		}
