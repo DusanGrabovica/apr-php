@@ -1,5 +1,7 @@
 # apr-php
 
+**For educational purposes only**
+
 Neoficijalni PHP library za pretragu APRa.
 
 ## Example
