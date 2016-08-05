@@ -28,15 +28,15 @@ Class Apr{
 		return $this->server;
 	}
 
-	public function search(){
+	public function search($query, $category = 1){
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, "http://pretraga2.apr.gov.rs/ObjedinjenePretrage/Search/SearchResult");
 
 		$data = [
 			"__RequestVerificationToken" => $this->hidden,
 			"rdbtnSelectInputType" => "poslovnoIme",
-			"SearchByNameString" => "sbb",
-			"SelectedRegisterId" => "1",
+			"SearchByNameString" => $query,
+			"SelectedRegisterId" => $category,
 			"X-Requested-With" => "XMLHttpRequest"
 		];
 
@@ -84,7 +84,4 @@ Class Apr{
 		}
 	}
 }
-
-$apr = new Apr();
-echo $apr->search();
 
